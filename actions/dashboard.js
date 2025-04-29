@@ -31,6 +31,7 @@ export async function createAccount(data) {
         });
 
         if(!user) {
+            console.error("User not found in the database for userId:", userId);
             throw new Error('Unauthorized');
         }
 
@@ -76,30 +77,37 @@ export async function createAccount(data) {
 }
 
 export async function getUserAccounts() {
-    const { userId } = await auth();
-    if(!userId) throw new Error("Unauthorised");
+    try {
+        const { userId } = await auth();
+        console.log("Retrieved userId:", userId); // Debug log
+        if (!userId) throw new Error("Unauthorized");
 
-    const user = await db.user.findUnique({
-        where: { clerkUserId: userId },
-    });
+        const user = await db.user.findUnique({
+            where: { clerkUserId: userId },
+        });
 
-    if(!user) {
-        throw new Error("User not found");
-    }
+        if (!user) {
+            console.error("User not found in the database for userId:", userId); // Debug log
+            throw new Error("User not found");
+        }
 
-    const accounts = await db.account.findMany({
-        where: { userId: user.id },
-        orderBy:{createdAt: "desc"},
-        include: {
-            _count:{
-                select:{
-                    transactions: true,
+        const accounts = await db.account.findMany({
+            where: { userId: user.id },
+            orderBy: { createdAt: "desc" },
+            include: {
+                _count: {
+                    select: {
+                        transactions: true,
+                    },
                 },
             },
-        },
-    });
+        });
 
-    const serializedAccount = accounts.map(serializedTransaction);
+        const serializedAccount = accounts.map(serializedTransaction);
 
-    return serializedAccount;
+        return serializedAccount;
+    } catch (error) {
+        console.error("Error in getUserAccounts:", error.message); // Debug log
+        throw new Error(error.message);
+    }
 }

@@ -1,5 +1,6 @@
 "use client"
 
+import { bulkDeleteTransactions } from '@/actions/accounts'
 import { Checkbox } from '@/components/ui/checkbox'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
@@ -7,10 +8,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { categoryColors } from '@/data/categories'
+import useFetch from '@/hooks/use-fetch'
 import { format } from 'date-fns'
 import { Badge, ChevronDown, ChevronUp, Clock, RefreshCcw, Search, Trash, X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
+import { BarLoader } from 'react-spinners'
 
 const RECURRING_INTERVALS = {
   DAILY: "Daily",
@@ -26,15 +29,21 @@ const TransactionTable = ({ transactions }) => {
     field: "date",
     direction: "desc",
   });
-
+ 
   const [searchItem, setSearchItem] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
   const [recurringFilter, setRecurringFilter] = useState("");
 
+  const {
+    loading: deleteLoading,
+    fn: deleteFn,
+    data: deleted,
+  } = useFetch(bulkDeleteTransactions);
 
   const filteredAndSortedTransactions = useMemo(() => {
     let result = [...transactions];
 
+    // Apply search filter
     if(searchItem) {
       const searchLower = searchItem.toLowerCase();
       result = result.filter((transaction) => 
@@ -42,6 +51,39 @@ const TransactionTable = ({ transactions }) => {
       );
     }
 
+    // Apply recurring filter
+    if(recurringFilter) {
+      result = result.filter((transaction) => {
+        if(recurringFilter === "recurring") return transaction.isRecurring;
+        return !transaction.isRecurring;
+      });
+    }
+
+    // Apply type filter
+    if(typeFilter) {
+      result = result.filter((transaction) => transaction.type === typeFilter);
+    }
+
+    // Apply sorting
+    result.sort((a, b) => {
+      let comparison = 0;
+
+      switch(sortConfig.field) {
+        case "date":
+          comparison = new Date(b.date) - new Date(a.date);
+          break;
+        case "category":
+          comparison = a.category.localeCompare(b.category);
+          break;
+        case "amount":
+          comparison = b.amount - a.amount;
+          break;
+        default:
+          comparison = 0;
+      }
+
+      return sortConfig.direction === "asc" ? comparison : -comparison;
+    })
 
     return result;
   }, [
@@ -77,12 +119,23 @@ const TransactionTable = ({ transactions }) => {
     ));
   }
 
-  const handleBulkDelete = () => {
-    if (selectedIds.length === 0) return;
-    // Call the delete function with selectedIds
+  const handleBulkDelete = async () => {
+    if (
+      !window.confirm(
+        `Are you sure you want to delete ${selectedIds.length} transactions?`
+      )
+    ) {
+      return;
+    }
+
     deleteFn(selectedIds);
-    setSelectedIds([]); // Clear selection after deletion
-  }
+  };
+
+  useEffect(() => {
+    if(deleted && !deleteLoading) {
+      toast.error("Transactions deleted successfully");
+    }
+  }, [deleted, deleteLoading]);
 
   const handleClearFilters = () => {
     setSearchItem("");
@@ -93,6 +146,10 @@ const TransactionTable = ({ transactions }) => {
 
   return (
     <div className='space-y-4'>
+      {deleteLoading && (
+        <BarLoader className="mt-4" width={"100%"} color="#933ea" />
+      )}
+    
       {/* Filters */}
       <div className='flex flex-col sm:flex-row gap-4'>
         <div className='relative flex-1'>
@@ -202,8 +259,8 @@ const TransactionTable = ({ transactions }) => {
                     <span className="ml-2">{sortConfig.direction === "asc" ? <ChevronUp /> : <ChevronDown />}</span>
                   )}
               </div>
-
             </TableHead>
+
             <TableHead 
               className="cursor-pointer"
               onClick={() => handleSort("amount")}
@@ -234,12 +291,14 @@ const TransactionTable = ({ transactions }) => {
               </TableRow>
             ): (
               filteredAndSortedTransactions.map((transaction) => (
-                <TableRow key={transaction.id}>
+              <TableRow key={transaction.id}>
+
                   <TableCell>
                     <Checkbox onCheckedChange={() => handleSelect(transaction.id)}
                      checked={selectedIds.includes(transaction.id)}
                     />
                   </TableCell>
+
                   <TableCell>{format(new Date(transaction.date), "PP")}</TableCell>
                   <TableCell>{transaction.description}</TableCell>
                   <TableCell className="capitalize">
@@ -251,10 +310,17 @@ const TransactionTable = ({ transactions }) => {
                      {transaction.category}
                     </span>
                   </TableCell>
-                  <TableCell className="text-right font-medium">
-                    {transaction.type === "EXPENSE" ? "red" : "green"}$
+
+                  <TableCell 
+                    className="text-right font-medium"
+                    style={{
+                      color: transaction.type === "EXPENSE" ? "red" : "green",
+                    }}
+                  >
+                    {transaction.type === "EXPENSE" ? "-" : "+"}$
                     ${transaction.amount.toFixed(2)}
                   </TableCell>
+
                   <TableCell>
                     {transaction.isRecurring ? (
                       <TooltipProvider>
@@ -302,13 +368,15 @@ const TransactionTable = ({ transactions }) => {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
                         <DropdownMenuLabel 
-                            onClick={() => {
-                              // Handle edit action
-                              router.push(
-                                `/transaction/create?edit=${transaction.id}`
-                              )
-                            }}>
-                          Edit</DropdownMenuLabel>
+                          onClick={() => {
+                            // Handle edit action
+                            router.push(
+                              `/transaction/create?edit=${transaction.id}`
+                            )
+                          }}
+                        >
+                          Edit
+                        </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                          className="text-destructive"
@@ -318,7 +386,7 @@ const TransactionTable = ({ transactions }) => {
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
-              </TableRow>
+                </TableRow>
               ))
             )}
         </TableBody>

@@ -55,8 +55,7 @@ const Header = async () => {
         </div>
       </nav>
     </div>
-    
-    );
+  );
 };
 
 export default Header;
