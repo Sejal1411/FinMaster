@@ -1,10 +1,14 @@
-import { Body, Button, Container, Head, Heading, Html, Preview, Section, Text } from "@react-email/components";
+import { Body, Container, Head, Heading, Html, Preview, Section, Text } from "@react-email/components";
 import * as React from "react";
 
 export default function EmailTemplate({
-    userName="",
+    userName = "Sejal Sinha",
     type="budget-alert",
-    data = {},
+    data = {
+        percentageUsed: 85,
+        budgetAmount: 4000,
+        totalExpenses: 3400,
+    },
 }) {
     if (type === "monthly-report") {
 
@@ -30,11 +34,11 @@ export default function EmailTemplate({
                         </div>
                         <div style={styles.stat}>
                             <Text style={styles.text}>Spent So Far</Text>
-                            <Text style={styles.Heading}>${data?.totalExpenses}</Text>
+                            <Text style={styles.heading}>${data?.totalExpenses}</Text>
                         </div>
                         <div style={styles.stat}>
                             <Text style={styles.text}>Remaining</Text>
-                            <Text style={styles.Heading}>
+                            <Text style={styles.heading}>
                               ${data?.budgetAmount - data?.totalExpenses}
                             </Text>
                         </div>

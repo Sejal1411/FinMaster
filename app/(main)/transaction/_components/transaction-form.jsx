@@ -25,11 +25,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-// import { CreateAccountDrawer } from "@/components/create-account-drawer";
+import  CreateAccountDrawer  from "@/components/create-account-drawer";
 import { cn } from "@/lib/utils";
 import { createTransaction, updateTransaction } from "@/actions/transaction";
 import { transactionSchema } from "@/app/lib/schema";
-// import { ReceiptScanner } from "./recipt-scanner";
+import ReceiptScanner from "./receipt-scanner";
 
 export function AddTransactionForm({
   accounts,
@@ -81,7 +81,7 @@ export function AddTransactionForm({
     data: transactionResult,
   } = useFetch(editMode ? updateTransaction : createTransaction);
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     const formData = {
       ...data,
       amount: parseFloat(data.amount),
@@ -128,10 +128,13 @@ export function AddTransactionForm({
     (category) => category.type === type
   );
 
+
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      {/* Receipt Scanner - Only show in create mode */}
-      {!editMode && <ReceiptScanner onScanComplete={handleScanComplete} />}
+      {/* AI Receipt Scanner */}
+      <ReceiptScanner onScanComplete={handleScanComplete}/>
+      {/* {!editMode && <ReceiptScanner onScanComplete={handleScanComplete} />} */}
 
       {/* Type */}
       <div className="space-y-2">
@@ -148,6 +151,7 @@ export function AddTransactionForm({
             <SelectItem value="INCOME">Income</SelectItem>
           </SelectContent>
         </Select>
+
         {errors.type && (
           <p className="text-sm text-red-500">{errors.type.message}</p>
         )}
@@ -287,7 +291,7 @@ export function AddTransactionForm({
             defaultValue={getValues("recurringInterval")}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select interval" />
+              <SelectValue placeholder="Select Interval" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="DAILY">Daily</SelectItem>
@@ -309,12 +313,12 @@ export function AddTransactionForm({
         <Button
           type="button"
           variant="outline"
-          className="w-full"
+          className="w-90"
           onClick={() => router.back()}
         >
           Cancel
         </Button>
-        <Button type="submit" className="w-full" disabled={transactionLoading}>
+        <Button type="submit" className="w-90" disabled={transactionLoading}>
           {transactionLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

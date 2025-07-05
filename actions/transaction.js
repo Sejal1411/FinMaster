@@ -4,13 +4,17 @@ import aj from "@/lib/arcjet";
 import { db } from "@/lib/prisma";
 import { request } from "@arcjet/next";
 import { auth } from "@clerk/nextjs/server";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { revalidatePath } from "next/cache";
+
+const genAi = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
 
 const serializeAmount = (obj) => ({
    ...obj,
    amount: obj.amount.toNumber(),
 });
 
+// Create Transaction
 export async function createTransaction(data) {
     try {
        const { userId } = await auth();
@@ -41,7 +45,7 @@ export async function createTransaction(data) {
          throw new Error("Request blocked");
       }
          const user = await db.user.findUnique({
-            where: { clerkuserId: userId },
+            where: { clerkUserId: userId },
          });
 
          if(!user) {
@@ -120,7 +124,7 @@ export async function getTransaction(id) {
    }
 
    const user = await db.user.findUnique({
-      where: { clerkuserId: userId },
+      where: { clerkUserId: userId },
    });
 
    if(!user) {
@@ -139,7 +143,80 @@ export async function getTransaction(id) {
     return serializeAmount(transaction);
 }
 
+export async function updateTransaction(id, data) {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
 
+    const user = await db.user.findUnique({
+      where: { clerkUserId: userId },
+    });
+
+    if (!user) throw new Error("User not found");
+
+    // Get original transaction to calculate balance change
+    const originalTransaction = await db.transaction.findUnique({
+      where: {
+        id,
+        userId: user.id,
+      },
+      include: {
+        account: true,
+      },
+    });
+
+    if (!originalTransaction) throw new Error("Transaction not found");
+
+    // Calculate balance changes
+    const oldBalanceChange =
+      originalTransaction.type === "EXPENSE"
+        ? -originalTransaction.amount.toNumber()
+        : originalTransaction.amount.toNumber();
+
+    const newBalanceChange =
+      data.type === "EXPENSE" ? -data.amount : data.amount;
+
+    const netBalanceChange = newBalanceChange - oldBalanceChange;
+
+    // Update transaction and account balance in a transaction
+    const transaction = await db.$transaction(async (tx) => {
+      const updated = await tx.transaction.update({
+        where: {
+          id,
+          userId: user.id,
+        },
+        data: {
+          ...data,
+          nextRecurringDate:
+            data.isRecurring && data.recurringInterval
+              ? calculateNextRecurringDate(data.date, data.recurringInterval)
+              : null,
+        },
+      });
+
+      // Update account balance
+      await tx.account.update({
+        where: { id: data.accountId },
+        data: {
+          balance: {
+            increment: netBalanceChange,
+          },
+        },
+      });
+
+      return updated;
+    });
+
+    revalidatePath("/dashboard");
+    revalidatePath(`/account/${data.accountId}`);
+
+    return { success: true, data: serializeAmount(transaction) };
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+// Helper function to calculate next recurring date
 function calculateNextRecurringDate(startDate, interval) {
    const date = new Date(startDate);
 
@@ -158,4 +235,70 @@ function calculateNextRecurringDate(startDate, interval) {
          break;
    }
    return date;
+}
+
+export async function scanReceipt(file) {
+   try{
+       const model = genAi.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+      //  Convert File to ArrayBuffer
+      const arrayBuffer = await file.arrayBuffer();
+
+      //  Convert ArrayBuffer to Based
+      const base64String = Buffer.from(arrayBuffer).toString("base64");
+
+      const prompt = `
+      Analyze this receipt image and extract the following information in JSON format:
+      - Total amount (just the number)
+      - Date (in ISO format)
+      - Description or items purchased (brief summary)
+      - Merchant/store name
+      - Suggested category (one of: housing,transportation,groceries,utilities,entertainment,food,shopping,healthcare,education,personal,travel,insurance,gifts,bills,other-expense )
+      
+      Only respond with valid JSON in this exact format:
+      {
+        "amount": number,
+        "date": "ISO date string",
+        "description": "string",
+        "merchantName": "string",
+        "category": "string"
+      }
+
+      If its not a recipt, return an empty object
+    `;
+
+      const result = await model.generateContent([
+         {
+            inlineData: {
+               data: base64String,
+               mimeType: file.type,
+
+            },
+         },
+         prompt,
+
+      ]);
+
+      const response = await result.response;
+      const text = response.text();
+      const cleanedText = text.replace(/```(?:json)?\n?/g, "").trim();
+
+      try {
+         const data = JSON.parse(cleanedText);
+      return {
+        amount: parseFloat(data.amount),
+        date: new Date(data.date),
+        description: data.description,
+        category: data.category,
+        merchantName: data.merchantName,
+      };
+    } catch (parseError) {
+      console.error("Error parsing JSON response:", parseError);
+      throw new Error("Invalid response format from Gemini");
+    }
+
+   } catch (error) {
+      throw new Error("Failed to scan receipt");
+      console.error("Error scanning receipt:", error.message);
+   }
 }
