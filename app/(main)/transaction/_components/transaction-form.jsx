@@ -25,11 +25,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-// import { CreateAccountDrawer } from "@/components/create-account-drawer";
+import  CreateAccountDrawer  from "@/components/create-account-drawer";
 import { cn } from "@/lib/utils";
 import { createTransaction, updateTransaction } from "@/actions/transaction";
 import { transactionSchema } from "@/app/lib/schema";
-// import { ReceiptScanner } from "./recipt-scanner";
+import { ReceiptScanner } from "./receipt-scanner";
 
 export function AddTransactionForm({
   accounts,
@@ -309,12 +309,12 @@ export function AddTransactionForm({
         <Button
           type="button"
           variant="outline"
-          className="w-full"
+          className="w-90"
           onClick={() => router.back()}
         >
           Cancel
         </Button>
-        <Button type="submit" className="w-full" disabled={transactionLoading}>
+        <Button type="submit" className="w-90" disabled={transactionLoading}>
           {transactionLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
