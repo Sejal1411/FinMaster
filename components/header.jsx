@@ -9,52 +9,57 @@ const Header = async () => {
   await checkUser();
 
   return (
-    <div className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-100 border-b ">
-      <nav className="container mx-auto px-4 py-4 flex items-center justify-between"> 
-        <Link href="/">
-          <Image src={"/logo.png"}
-           alt="fin logo"
-           height={100} width={100} 
-           className="h-20 w-auto object-contain rounded-full"
-          />
+    <div className="fixed top-0 w-full bg- backdrop-blur-md z-50 border-b border-white/10">
+  <nav className="container mx-auto px-4 py-3 flex items-center justify-between">
+    <Link href="/">
+      {/* <Image
+        src={"/logo.png"}
+        alt="fin logo"
+        height={100}
+        width={100}
+        className="h-20 w-auto object-contain rounded-full"
+      /> */}
+    </Link>
+
+    <div className="flex items-center space-x-4">
+      <SignedIn>
+        <Link
+          href="/dashboard"
+          className="text-white flex items-center gap-2"
+        >
+          <Button variant="outline" className="border-white/20 text-white hover:border-purple-400">
+            <LayoutDashboard size={18} />
+            <span className="hidden md:inline">Dashboard</span>
+          </Button>
         </Link>
-      
-        <div className="flex items-center space-x-4">
-        <SignedIn>
-          <Link 
-            href="/dashboard" 
-            className="text-gray-600 hover:text-blue-600 flex items-center gap-2" 
-          >
-            <Button variant="outline">
-              <LayoutDashboard size={18}/>
-              <span className="hidden md:inline">Dashboard</span>
-            </Button>
-          </Link>
 
-          <Link href="/transaction/create">
-            <Button className="flex items-center gap-2">
-              <PenBox size={18}/>
-              <span className="hidden md:inline">Add Transaction</span>
-            </Button>
-          </Link>
-        </SignedIn>
+        <Link href="/transaction/create">
+          <Button className="flex items-center gap-2 bg-gradient-to-r from-purple-800 to-purple-600 hover:from-purple-700 hover:to-purple-500 text-white">
+            <PenBox size={18} />
+            <span className="hidden md:inline">Add Transaction</span>
+          </Button>
+        </Link>
+      </SignedIn>
 
-        <SignedOut>
-          <SignInButton forceRedirectUrl="/dashboard">
-            <Button variant="outline">Login</Button>
-          </SignInButton>
-        </SignedOut>
+      <SignedOut>
+        <SignInButton forceRedirectUrl="/dashboard">
+          <Button variant="outline" className="border-white/20 text-white hover:border-purple-400">
+            Login
+          </Button>
+        </SignInButton>
+      </SignedOut>
 
-        <SignedIn>
-          <UserButton appearance={{
-            elements:{
-              avatarBox: "w-10 h-10",
-            },
-          }}/>
-        </SignedIn>
-        </div>
-      </nav>
+      <SignedIn>
+        <UserButton appearance={{
+          elements: {
+            avatarBox: "w-10 h-10",
+          },
+        }} />
+      </SignedIn>
     </div>
+  </nav>
+</div>
+
   );
 };
 

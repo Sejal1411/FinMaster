@@ -30,37 +30,59 @@ import {
   // Features Data
   export const featuresData = [
     {
-      icon: <BarChart3 className="h-8 w-8 text-blue-600" />,
-      title: "Advanced Analytics",
-      description:
-        "Get detailed insights into your spending patterns with AI-powered analytics",
-    },
-    {
-      icon: <Receipt className="h-8 w-8 text-blue-600" />,
-      title: "Smart Receipt Scanner",
-      description:
-        "Extract data automatically from receipts using advanced AI technology",
-    },
-    {
-      icon: <PieChart className="h-8 w-8 text-blue-600" />,
-      title: "Budget Planning",
-      description: "Create and manage budgets with intelligent recommendations",
-    },
-    {
-      icon: <CreditCard className="h-8 w-8 text-blue-600" />,
-      title: "Multi-Account Support",
-      description: "Manage multiple accounts and credit cards in one place",
-    },
-    {
-      icon: <Globe className="h-8 w-8 text-blue-600" />,
-      title: "Multi-Currency",
-      description: "Support for multiple currencies with real-time conversion",
-    },
-    {
-      icon: <Zap className="h-8 w-8 text-blue-600" />,
-      title: "Automated Insights",
-      description: "Get automated financial insights and recommendations",
-    },
+    icon: (
+      <div className="w-12 h-12 flex items-center justify-center rounded-full bg-blue-100">
+        <BarChart3 className="h-8 w-8 text-blue-600" />
+      </div>
+    ),
+    title: "Advanced Analytics",
+    description: "Get detailed insights into your spending patterns with AI-powered analytics",
+  },
+  {
+    icon: (
+      <div className="w-12 h-12 flex items-center justify-center rounded-full bg-orange-100">
+        <Receipt className="h-8 w-8 text-orange-400" />
+      </div>
+    ),
+    title: "Smart Receipt Scanner",
+    description: "Extract data automatically from receipts using advanced AI technology",
+  },
+  {
+    icon: (
+      <div className="w-12 h-12 flex items-center justify-center rounded-full bg-red-100">
+        <PieChart className="h-8 w-8 text-red-600" />
+      </div>
+    ),
+    title: "Budget Planning",
+    description: "Create and manage budgets with intelligent recommendations",
+  },
+  {
+    icon: (
+      <div className="w-12 h-12 flex items-center justify-center rounded-full bg-green-100">
+        <CreditCard className="h-8 w-8 text-green-500" />
+      </div>
+    ),
+    title: "Multi-Account Support",
+    description: "Manage multiple accounts and credit cards in one place",
+  },
+  {
+    icon: (
+      <div className="w-12 h-12 flex items-center justify-center rounded-full bg-pink-100">
+        <Globe className="h-8 w-8 text-pink-600" />
+      </div>
+    ),
+    title: "Multi-Currency",
+    description: "Support for multiple currencies with real-time conversion",
+  },
+  {
+    icon: (
+      <div className="w-12 h-12 flex items-center justify-center rounded-full bg-blue-100">
+        <Zap className="h-8 w-8 text-blue-600" />
+      </div>
+    ),
+    title: "Automated Insights",
+    description: "Get automated financial insights and recommendations",
+  },
   ];
   
   // How It Works Data
