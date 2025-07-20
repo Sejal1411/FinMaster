@@ -4,9 +4,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { featuresData, howItWorksData, statsData } from "@/data/landing";
 import Link from "next/link";
 
+
 export default function Home() {
   return (
-    <div className="mt-15 min-h-screen bg-gradient-to-b from-[#080b4b] via-purple-500 to-purple-100 text-white">
+    <div className="mt-15 min-h-screen bg-gradient-to-br from-[#080b4b] via-purple-500 to-purple-100 text-white">
   <HeroSection />
 
   <section className="py-20 bg-purple-900/60">
@@ -29,8 +30,8 @@ export default function Home() {
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {featuresData.map((feature, index) => (
-          <Card key={index} className="p-6 bg-purple-900/60 backdrop-blur-lg rounded-xl shadow-2xl shadow-pink-500/30">
-            <CardContent className="space-y-4 pt-4">
+          <Card key={index} className="p-10 bg-purple-900/60 backdrop-blur-lg rounded-xl shadow-2xl shadow-pink-500/30">
+            <CardContent className="space-y-4 pt-2">
               {feature.icon}
               <h3 className="text-xl text-white font-semibold">{feature.title}</h3>
               <p className="text-purple-400">{feature.description}</p>
@@ -69,7 +70,7 @@ export default function Home() {
       <Link href="/dashboard">
         <Button
           size="lg"
-          className="bg-gradient-to-r from-purple-800 to-[#fc03ba] text-white hover:from-[#fc03ba] hover:to-purple-800 border-0 shadow-lg animate-bounce"
+          className="bg-gradient-to-r from-purple-800 to-[#fc03ba] text-white hover:from-[#fc03ba] hover:to-purple-800 rounded-full animate-bounce"
         >
           Start free trial
         </Button>

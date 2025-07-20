@@ -1,8 +1,9 @@
 "use server"
 
 import { db } from "@/lib/prisma";
-import { auth, clerkMiddleware } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import { clerkClient } from "@clerk/nextjs/server";
 
 
 const serializedTransaction = (obj) => {
@@ -77,40 +78,52 @@ export async function createAccount(data) {
 }
 
 export async function getUserAccounts() {
-    try {
-        const { userId } = await auth();
-        console.log("Retrieved userId:", userId); // Debug log
-        if (!userId) throw new Error("Unauthorized");
+  try {
+    const { userId } = await auth();
+    console.log("Retrieved userId:", userId); // Debug log
 
-        const user = await db.user.findUnique({
-            where: { clerkUserId: userId },
-        });
+    if (!userId) throw new Error("Unauthorized");
 
-        if (!user) {
-            console.error("User not found in the database for userId:", userId); // Debug log
-            throw new Error("User not found");
-        }
+    // Try to find the user in your DB
+    let user = await db.user.findUnique({
+      where: { clerkUserId: userId },
+    });
 
-        const accounts = await db.account.findMany({
-            where: { userId: user.id },
-            orderBy: { createdAt: "desc" },
-            include: {
-                _count: {
-                    select: {
-                        transactions: true,
-                    },
-                },
-            },
-        });
-
-        const serializedAccount = accounts.map(serializedTransaction);
-
-        return serializedAccount;
-    } catch (error) {
-        console.error("Error in getUserAccounts:", error.message); // Debug log
-        throw new Error(error.message);
+    // If not found, create the user
+    if (!user) {
+      const clerkUser = await clerkClient.users.getUser(userId);
+      console.warn("User not found in DB, creating one...");
+      const user = await db.user.create({
+        data: {
+          clerkUserId: userId,
+          email: clerkUser.emailAddresses[0].emailAddress,
+          // Add other fields as needed, like name, email, etc.
+        },
+      });
     }
+
+    // Get accounts for this user
+    const accounts = await db.account.findMany({
+      where: { userId: user.id },
+      orderBy: { createdAt: "desc" },
+      include: {
+        _count: {
+          select: {
+            transactions: true,
+          },
+        },
+      },
+    });
+
+    const serializedAccount = accounts.map(serializedTransaction);
+    return serializedAccount;
+
+  } catch (error) {
+    console.error("Error in getUserAccounts:", error.message);
+    throw new Error(error.message);
+  }
 }
+
 
 export async function getDashboardData() {
   const { userId } = await auth();
