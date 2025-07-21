@@ -8,7 +8,7 @@ const Header = async () => {
   await checkUser();
 
   return (
-    <div className="fixed top-0 w-full bg- backdrop-blur-md z-50 border-b border-white/10">
+    <div className="fixed top-0 w-full bg- backdrop-blur-md z-50 border-b border-white/10 bg-purple-400">
   <nav className="container mx-auto px-4 py-3 flex items-center justify-between">
     <Link href="/">
       {/* <Image
