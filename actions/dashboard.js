@@ -93,11 +93,10 @@ export async function getUserAccounts() {
     if (!user) {
       const clerkUser = await clerkClient.users.getUser(userId);
       console.warn("User not found in DB, creating one...");
-      const user = await db.user.create({
+      user = await db.user.create({
         data: {
           clerkUserId: userId,
           email: clerkUser.emailAddresses[0].emailAddress,
-          // Add other fields as needed, like name, email, etc.
         },
       });
     }
@@ -123,6 +122,7 @@ export async function getUserAccounts() {
     throw new Error(error.message);
   }
 }
+
 
 
 export async function getDashboardData() {
