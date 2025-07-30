@@ -1,11 +1,10 @@
-import React from 'react'
 
-const AuthLayout = ({ children }) => {
+const MainLayout = ({children}) => {
   return (
-    <div className='flex justify-center pt-40'>
+    <div className='container mx-auto py-25 bg-gradient-to-br from-[#080b4b] via-purple-500 to-purple-100'>
       {children}
     </div>
   )
 }
 
-export default AuthLayout
+export default MainLayout

@@ -88,31 +88,19 @@ import {
   // How It Works Data
   export const howItWorksData = [
     {
-      icon: (
-        <div className="w-12 h-12 flex items-center justify-center rounded-full bg-green-100">
-          <CreditCard className="h-8 w-8 text-green-500" />
-        </div>
-      ),
+      icon: <CreditCard className="h-8 w-8 text-blue-600" />,
       title: "1. Create Your Account",
       description:
         "Get started in minutes with our simple and secure sign-up process",
     },
     {
-      icon: (
-        <div className="w-12 h-12 flex items-center justify-center rounded-full bg-blue-100">
-          <BarChart3 className="h-8 w-8 text-blue-600 " />
-        </div>
-    ),
+      icon: <BarChart3 className="h-8 w-8 text-blue-600" />,
       title: "2. Track Your Spending",
       description:
         "Automatically categorize and track your transactions in real-time",
     },
     {
-      icon: (
-        <div className="w-12 h-12 flex items-center justify-center rounded-full bg-pink-100">
-          <PieChart className="h-8 w-8 text-red-600" />
-        </div>
-      ),
+      icon: <PieChart className="h-8 w-8 text-blue-600" />,
       title: "3. Get Insights",
       description:
         "Receive AI-powered insights and recommendations to optimize your finances",

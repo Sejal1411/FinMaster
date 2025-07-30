@@ -67,6 +67,7 @@ export async function createAccount(data) {
             },
         });
 
+
         const serializedAccount = serializedTransaction(account);
 
         revalidatePath("/dashboard");
@@ -92,9 +93,7 @@ export async function getUserAccounts() {
     if (!user) {
       const clerkUser = await clerkClient.users.getUser(userId);
       console.warn("User not found in DB, creating one...");
-      
-      // Fixed: Remove redeclaration of 'user'
-      user = await db.user.create({
+      const user = await db.user.create({
         data: {
           clerkUserId: userId,
           email: clerkUser.emailAddresses[0].emailAddress,
@@ -124,6 +123,7 @@ export async function getUserAccounts() {
     throw new Error(error.message);
   }
 }
+
 
 export async function getDashboardData() {
   const { userId } = await auth();

@@ -1,26 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  Tooltip,
-  Legend,
-} from "recharts";
-import { format } from "date-fns";
-import { ArrowUpRight, ArrowDownRight } from "lucide-react";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tooltip } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
+import { ArrowDownRight, ArrowUpRight } from 'lucide-react';
+import React, { useState } from 'react'
+import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from 'recharts';
 
 const COLORS = [
   "#FF6B6B",
@@ -32,50 +19,52 @@ const COLORS = [
   "#9FA8DA",
 ];
 
-export function DashboardOverview({ accounts, transactions }) {
-  const [selectedAccountId, setSelectedAccountId] = useState(
-    accounts.find((a) => a.isDefault)?.id || accounts[0]?.id
-  );
+const DashboardOverview = ({ accounts, transactions }) => {
+    const [selectedAccountId, setSelectedAccountId] = useState(
+      accounts.find((a) => a.isDefault)?.id || accounts[0]?.id
+    );
 
-  // Filter transactions for selected account
-  const accountTransactions = transactions.filter(
-    (t) => t.accountId === selectedAccountId
-  );
+    // Filter transactions for selected account
+    const accountTransactions = transactions.filter(
+      (t) => t.accountId === selectedAccountId
+    );
 
   // Get recent transactions (last 5)
-  const recentTransactions = accountTransactions
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, 5);
+    const recentTransactions = accountTransactions
+     .sort((a, b) => new Date(b.date) - new Date(a.date))
+     .slice(0, 5);
 
-  // Calculate expense breakdown for current month
-  const currentDate = new Date();
-  const currentMonthExpenses = accountTransactions.filter((t) => {
-    const transactionDate = new Date(t.date);
-    return (
-      t.type === "EXPENSE" &&
-      transactionDate.getMonth() === currentDate.getMonth() &&
-      transactionDate.getFullYear() === currentDate.getFullYear()
-    );
-  });
+    // Calculate expense breakdown for current month
+    const currentDate = new Date();
+    const currentMonthExpenses = accountTransactions.filter((t) => {
+        const transactionDate = new Date(t.date);
+        return (
+            t.type === "EXPENSE" &&
+            transactionDate.getMonth() === currentDate.getMonth() &&
+            transactionDate.getFullYear() === currentDate.getFullYear()
+        );
+    });
 
-  // Group expenses by category
-  const expensesByCategory = currentMonthExpenses.reduce((acc, transaction) => {
+    // Group expenses by category
+    const expensesByCategory = currentMonthExpenses.reduce((acc, transaction) => {
     const category = transaction.category;
     if (!acc[category]) {
       acc[category] = 0;
     }
     acc[category] += transaction.amount;
     return acc;
-  }, {});
+    }, {});
 
-  // Format data for pie chart
-  const pieChartData = Object.entries(expensesByCategory).map(
+    
+    // Format data for pie chart
+    const pieChartData = Object.entries(expensesByCategory).map(
     ([category, amount]) => ({
       name: category,
       value: amount,
     })
   );
 
+    
   return (
     <div className="grid gap-4 md:grid-cols-2">
       {/* Recent Transactions Card */}
@@ -194,3 +183,5 @@ export function DashboardOverview({ accounts, transactions }) {
     </div>
   );
 }
+  
+export default DashboardOverview;
