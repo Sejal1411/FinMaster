@@ -25,11 +25,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import  CreateAccountDrawer  from "@/components/create-account-drawer";
+import { CreateAccountDrawer } from "@/components/create-account-drawer";
 import { cn } from "@/lib/utils";
 import { createTransaction, updateTransaction } from "@/actions/transaction";
 import { transactionSchema } from "@/app/lib/schema";
-import { ReceiptScanner } from "./receipt-scanner";
+import { ReceiptScanner } from "./recipt-scanner";
 
 export function AddTransactionForm({
   accounts,
@@ -129,7 +129,7 @@ export function AddTransactionForm({
   );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 ">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* Receipt Scanner - Only show in create mode */}
       {!editMode && <ReceiptScanner onScanComplete={handleScanComplete} />}
 
@@ -309,12 +309,12 @@ export function AddTransactionForm({
         <Button
           type="button"
           variant="outline"
-          className="w-90"
+          className="w-full"
           onClick={() => router.back()}
         >
           Cancel
         </Button>
-        <Button type="submit" className="w-90" disabled={transactionLoading}>
+        <Button type="submit" className="w-full" disabled={transactionLoading}>
           {transactionLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
