@@ -65,69 +65,73 @@ const BudgetProgress = ({ initialBudget, currentExpenses }) => {
     };
 
     return (
-        <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <div className="flex-1">
-                    <CardTitle>Monthly Budget (Default Account)</CardTitle>
-                    {isEditing ? (
-                        <div className="flex items-center gap-2">
-                            <Input
-                                type="number"
-                                value={newBudget}
-                                onChange={(e) => setNewBudget(e.target.value)}
-                                className="w-32"
-                                placeholder="Enter amount"
-                                autoFocus
-                                disabled={isLoading}
-                            />
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={handleUpdateBudget}
-                                disabled={isLoading}
-                            >
-                                <Check className="h-4 w-4 text-green-500" />
-                            </Button>
-                            <Button variant="ghost" size="icon" onClick={handleCancel}>
-                                <X className="h-4 w-4 text-red-500" />
-                            </Button>
-                        </div>
-                    ) : (
-                        <>
-                            <CardDescription></CardDescription>
+        <div className="grid grid-cols-2 gap-4">
+  <Card className="col-span-1 border-2 border-dashed border-pink-500 bg-blue-50 max-w-full">
+    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+      <div className="grid grid-cols-2 items-center w-full">
+        <CardTitle>Monthly Budget (Default Account)</CardTitle>
 
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => setIsEditing(true)}
-                                className="h-6 w-6"
-                            >
-                                <Pencil className="h-3 w-3" />
-                            </Button>
-                        </>
-                    )}
-                </div>
-            </CardHeader>
-            <CardContent>
-                {initialBudget && (
-                    <div className="space-y-2">
-                        <Progress
-                            value={percentUsed}
-                            extraStyles={`${
-                                percentUsed >= 90
-                                    ? "bg-red-500"
-                                    : percentUsed >= 75
-                                    ? "bg-yellow-500"
-                                    : "bg-green-500"
-                            }`}
-                        />
-                        <p className="text-xs text-muted-foreground text-right">
-                            {percentUsed.toFixed(1)}% used
-                        </p>
-                    </div>
-                )}
-            </CardContent>
-        </Card>
+        {isEditing ? (
+          <div className="flex items-center gap-2 justify-end">
+            <Input
+              type="number"
+              value={newBudget}
+              onChange={(e) => setNewBudget(e.target.value)}
+              className="w-32"
+              placeholder="Enter amount"
+              autoFocus
+              disabled={isLoading}
+            />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleUpdateBudget}
+              disabled={isLoading}
+            >
+              <Check className="h-4 w-4 text-green-500" />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={handleCancel}>
+              <X className="h-4 w-4 text-red-500" />
+            </Button>
+          </div>
+        ) : (
+          <div className="flex items-center justify-end gap-2">
+            <CardDescription></CardDescription>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsEditing(true)}
+              className="h-6 w-6"
+            >
+              <Pencil className="h-3 w-3" />
+            </Button>
+          </div>
+        )}
+      </div>
+    </CardHeader>
+
+    <CardContent>
+      {initialBudget && (
+        <div className="space-y-2">
+          <Progress
+            value={percentUsed}
+            extraStyles={`${
+              percentUsed >= 90
+                ? "bg-red-500"
+                : percentUsed >= 75
+                ? "bg-yellow-500"
+                : "bg-green-500"
+            }`}
+          />
+          <p className="text-xs text-muted-foreground text-right">
+            {percentUsed.toFixed(1)}% used
+          </p>
+        </div>
+      )}
+    </CardContent>
+  </Card>
+</div>
+
     );
 };
 

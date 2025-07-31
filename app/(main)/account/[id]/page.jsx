@@ -22,22 +22,23 @@ const AccountsPage = async ({ params }) => {
     const { transactions, ...account } = accountData;
 
     return (
-        <div className='space-y-8 px-5'>
+        <div className='space-y-8 px-5 mt-5'>
             <div className='flex gap-4 items-end justify-between'>
-                <div>
-                    <h1 className='text-5xl sm:text-6xl font-bold capitalize'>
+                <div className='mb-5'>
+                    <h1 className='text-5xl text-pink-200 sm:text-6xl font-bold capitalize'>
                         {account.name}
                     </h1>
-                    <p className='text-muted-foreground'>
-                        {account.type.charAt(0).toUpperCase() + account.type.slice(1).toLowerCase()} Account
-                    </p>
+                    
                 </div>
 
-                <div className='text-right pb-2'>
+                <div className='text-right pb-2 text-pink-100'>
                     <div className='text-xl sm:text-2xl font-bold'>
                         ${parseFloat(account.balance).toFixed(2)}
                     </div>
-                    <p className='text-sm text-muted-foreground'>
+                     <p className='text-gray-900'>
+                        {account.type.charAt(0).toUpperCase() + account.type.slice(1).toLowerCase()} Account
+                    </p>
+                    <p className='text-sm text-gray-900'>
                         {account._count.transactions} Transactions
                     </p>
                 </div>

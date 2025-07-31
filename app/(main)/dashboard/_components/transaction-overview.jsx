@@ -68,7 +68,7 @@ const DashboardOverview = ({ accounts, transactions }) => {
   return (
     <div className="grid gap-4 md:grid-cols-2">
       {/* Recent Transactions Card */}
-      <Card>
+      <Card className="border-2 border-pink-500 bg-blue-50">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <CardTitle className="text-base font-normal">
             Recent Transactions
@@ -134,7 +134,7 @@ const DashboardOverview = ({ accounts, transactions }) => {
       </Card>
 
       {/* Expense Breakdown Card */}
-      <Card>
+      <Card className="border-2 border-pink-500 bg-blue-50">
         <CardHeader>
           <CardTitle className="text-base font-normal">
             Monthly Expense Breakdown

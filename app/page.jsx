@@ -7,7 +7,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="mt-15 min-h-screen bg-gradient-to-br from-[#080b4b] via-purple-500 to-purple-100 text-white">
+    <div className="mt-20 min-h-screen bg-gradient-to-br from-[#080b4b] via-purple-500 to-purple-100 text-white">
   <HeroSection />
 
   <section className="py-20 bg-purple-900/60">

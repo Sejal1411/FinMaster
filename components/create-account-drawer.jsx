@@ -62,7 +62,7 @@ const CreateAccountDrawer = ({children}) => {
     }
 
    return (
-    <Drawer open={open} onOpenChange={setOpen}>
+    <Drawer open={open} onOpenChange={setOpen} className="bg-amber-700">
       <DrawerTrigger asChild>{children}</DrawerTrigger>
         <DrawerContent>
         <DrawerHeader>

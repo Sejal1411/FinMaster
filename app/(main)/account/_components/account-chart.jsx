@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { startOfDay, subDays } from 'date-fns';
+import { endOfDay, format, startOfDay, subDays } from 'date-fns';
 import React, { useMemo, useState } from 'react'
 import { Bar, BarChart, CartesianGrid, Legend, Rectangle, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
@@ -65,9 +65,9 @@ const AccountChart = ({transactions}) => {
     console.log("BarChart data:", filteredData);
 
     return (
-        <Card>
+        <Card className="bg-blue-50 border-2 border-pink-500">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-7">
-          <CardTitle className="text-base font-normal">
+          <CardTitle className="font-medium text-xl">
             Transaction Overview
           </CardTitle>
           <Select defaultValue={dateRange} onValueChange={setDateRange}>

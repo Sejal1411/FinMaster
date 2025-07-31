@@ -9,6 +9,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata = {
   title: "Finmaster",
   description: "Your personal finance assistant",
+  icons: {
+    icon: "/favicon.ico", // path relative to public/
+  },
 };
 
 export default function RootLayout({ children }) {

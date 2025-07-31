@@ -1,6 +1,8 @@
 "use client"
 
 import { bulkDeleteTransactions } from '@/actions/accounts'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
@@ -145,6 +147,7 @@ const TransactionTable = ({ transactions }) => {
   }
 
   return (
+    <Card className="p-5 bg-blue-50 border-2 border-pink-500">
     <div className='space-y-4'>
       {deleteLoading && (
         <BarLoader className="mt-4" width={"100%"} color="#933ea" />
@@ -153,7 +156,7 @@ const TransactionTable = ({ transactions }) => {
       {/* Filters */}
       <div className='flex flex-col sm:flex-row gap-4'>
         <div className='relative flex-1'>
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground"/>
+          <Search className="absolute left-2 top-2.5 h-4 w-4"/>
           <Input 
           placeholder="Search transactions"
           value={searchItem}
@@ -393,6 +396,7 @@ const TransactionTable = ({ transactions }) => {
      </Table>
      </div>
     </div>
+    </Card>
   )
 }
 

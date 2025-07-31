@@ -3,22 +3,25 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 import { LayoutDashboard, PenBox } from "lucide-react";
 import { checkUser } from "@/lib/checkUser";
+import Image from "next/image";
 
 const Header = async () => {
   await checkUser();
 
   return (
-    <div className="fixed top-0 w-full bg- backdrop-blur-md z-50 border-b border-white/10">
-  <nav className="container mx-auto px-4 py-3 flex items-center justify-between">
-    <Link href="/">
-      {/* <Image
-        src={"/logo.png"}
-        alt="fin logo"
-        height={100}
-        width={100}
-        className="h-20 w-auto object-contain rounded-full"
-      /> */}
-    </Link>
+    <div className="fixed top-0 w-full bg- backdrop-blur-md z-50">
+  <nav className="container bg-[#343865] mx-auto px-4 py-3 flex items-center justify-between border-b border-[#D3AF37]">
+    <Link href="/" className="flex items-center gap-1">
+  <Image
+    src="/logo.png"
+    alt="fin logo"
+    height={200}
+    width={200}
+    className="h-15 object-contain rounded-full bg-transparent"
+  />
+  <span className="text-3xl font-serif font-semibold text-[#D3AF37]">FinMaster</span>
+</Link>
+
 
     <div className="flex items-center space-x-4">
       <SignedIn>
