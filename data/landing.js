@@ -31,7 +31,7 @@ import {
   export const featuresData = [
     {
     icon: (
-      <div className="w-12 h-12 flex items-center justify-center rounded-full bg-blue-100">
+      <div className="w-15 h-15 flex items-center justify-center rounded-lg bg-blue-100">
         <BarChart3 className="h-8 w-8 text-blue-600" />
       </div>
     ),
@@ -40,7 +40,7 @@ import {
   },
   {
     icon: (
-      <div className="w-12 h-12 flex items-center justify-center rounded-full bg-orange-100">
+      <div className="w-15 h-15 flex items-center justify-center rounded-lg bg-orange-100">
         <Receipt className="h-8 w-8 text-orange-400" />
       </div>
     ),
@@ -49,7 +49,7 @@ import {
   },
   {
     icon: (
-      <div className="w-12 h-12 flex items-center justify-center rounded-full bg-red-100">
+      <div className="w-15 h-15 flex items-center justify-center rounded-lg bg-red-100">
         <PieChart className="h-8 w-8 text-red-600" />
       </div>
     ),
@@ -58,7 +58,7 @@ import {
   },
   {
     icon: (
-      <div className="w-12 h-12 flex items-center justify-center rounded-full bg-green-100">
+      <div className="w-15 h-15 flex items-center justify-center rounded-lg bg-green-100">
         <CreditCard className="h-8 w-8 text-green-500" />
       </div>
     ),
@@ -67,7 +67,7 @@ import {
   },
   {
     icon: (
-      <div className="w-12 h-12 flex items-center justify-center rounded-full bg-pink-100">
+      <div className="w-15 h-15 flex items-center justify-center rounded-lg bg-pink-100">
         <Globe className="h-8 w-8 text-pink-600" />
       </div>
     ),
@@ -76,7 +76,7 @@ import {
   },
   {
     icon: (
-      <div className="w-12 h-12 flex items-center justify-center rounded-full bg-blue-100">
+      <div className="w-15 h-15 flex items-center justify-center rounded-lg bg-blue-100">
         <Zap className="h-8 w-8 text-blue-600" />
       </div>
     ),
@@ -88,20 +88,20 @@ import {
   // How It Works Data
   export const howItWorksData = [
     {
-      icon: <CreditCard className="h-8 w-8 text-blue-600" />,
-      title: "1. Create Your Account",
+      icon: <CreditCard className="h-8 w-8 text-pink-600" />,
+      title: "Create Your Account",
       description:
         "Get started in minutes with our simple and secure sign-up process",
     },
     {
-      icon: <BarChart3 className="h-8 w-8 text-blue-600" />,
-      title: "2. Track Your Spending",
+      icon: <BarChart3 className="h-8 w-8 text-pink-600" />,
+      title: "Track Your Spending",
       description:
         "Automatically categorize and track your transactions in real-time",
     },
     {
-      icon: <PieChart className="h-8 w-8 text-blue-600" />,
-      title: "3. Get Insights",
+      icon: <PieChart className="h-8 w-8 text-pink-600" />,
+      title: "Get Insights",
       description:
         "Receive AI-powered insights and recommendations to optimize your finances",
     },
