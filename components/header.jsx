@@ -15,9 +15,9 @@ const Header = async () => {
         <Image
           src="/logo.png"
           alt="fin logo"
-          height={120}
-          width={120}
-          className=""
+          height={110}
+          width={110}
+          className="ml-10"
         />
       </Link>
       <Image 
@@ -25,7 +25,7 @@ const Header = async () => {
         alt="fin text"
         height={120}
         width={120}
-        className="object-contain w-auto"
+        className="object-contain w-auto mr-20"
       />
     </div>
 
