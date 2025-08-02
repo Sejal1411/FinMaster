@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 "use server";
 
 import aj from "@/lib/arcjet";
@@ -9,6 +11,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
 const serializeAmount = (obj) => ({
    ...obj,
    amount: obj.amount.toNumber(),
@@ -94,53 +97,53 @@ export async function createTransaction(data) {
    }
 }
 
-export async function getTransaction(id) {
-   const { userId } = await auth();
-   if (!userId) throw new Error("Unauthorized");
+export async function getUserAccounts() {
+  try {
+    const { userId } = await auth();
 
-   // Get request data for Arcjet
-   const req = await request();
-   const decision = await aj.protect(req, {
-      userId,
-      requested: 1,
-   });
+    if (!userId) {
+      throw new Error("Unauthorized");
+    }
 
-   if(decision.isDenied()) {
-      if(decision.reason.isRateLimit()) {
-         const { remaining, reset } = decision.reason;
-         console.error({
-            code: "RATE_LIMIT_EXCEEDED",
-            details: {
-               remaining,
-               resetInSeconds: reset,
-            },
-         });
+    let user = await db.user.findUnique({
+      where: { clerkUserId: userId },
+    });
 
-         throw new Error("Too many requests. Please try again later");
-      }
+    // If user not found in DB, create a new one using Clerk info
+    if (!user) {
+      const clerkUser = await clerkClient.users.getUser(userId);
+      console.warn("User not found in DB. Creating...");
 
-      throw new Error("Request Blocked");
-   }
+      user = await db.user.create({
+        data: {
+          clerkUserId: userId,
+          email: clerkUser.emailAddresses[0].emailAddress,
+        },
+      });
+    }
 
-   const user = await db.user.findUnique({
-      where: { clerkuserId: userId },
-   });
-
-   if(!user) {
-      throw new Error("User not found");
-   }
-
-   const transaction = await db.transaction.findUnique({
-      where: {
-        id,
-        userId: user.id,
+    // Fetch user's accounts
+    const accounts = await db.account.findMany({
+      where: { userId: user.id },
+      orderBy: { createdAt: "desc" },
+      include: {
+        _count: {
+          select: {
+            transactions: true,
+          },
+        },
       },
     });
-  
-    if (!transaction) throw new Error("Transaction not found");
-  
-    return serializeAmount(transaction);
+
+    // Serialize the response before returning
+    const serializedAccounts = accounts.map(serializeTransaction);
+    return serializedAccounts;
+  } catch (error) {
+    console.error("Error in getUserAccounts:", error.message);
+    throw new Error("Failed to get user accounts");
+  }
 }
+
 
 export async function updateTransaction(id, data) {
   try {
@@ -210,6 +213,39 @@ export async function updateTransaction(id, data) {
     revalidatePath(`/account/${data.accountId}`);
 
     return { success: true, data: serializeAmount(transaction) };
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+// Get User Transactions
+export async function getUserTransactions(query = {}) {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+
+    const user = await db.user.findUnique({
+      where: { clerkUserId: userId },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const transactions = await db.transaction.findMany({
+      where: {
+        userId: user.id,
+        ...query,
+      },
+      include: {
+        account: true,
+      },
+      orderBy: {
+        date: "desc",
+      },
+    });
+
+    return { success: true, data: transactions };
   } catch (error) {
     throw new Error(error.message);
   }
