@@ -28,7 +28,7 @@ import { Switch } from "@/components/ui/switch";
 import { createAccount } from "@/actions/dashboard";
 import { accountSchema } from "@/app/lib/schema";
 
-export function CreateAccountDrawer({ children }) {
+export default function CreateAccountDrawer({ children }) {
   const [open, setOpen] = useState(false);
   const {
     register,
