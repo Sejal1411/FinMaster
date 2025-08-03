@@ -1,6 +1,6 @@
-export const dynamic = "force-dynamic";
-
 "use server";
+
+export const dynamic = "force-dynamic";
 
 import aj from "@/lib/arcjet";
 import { db } from "@/lib/prisma";

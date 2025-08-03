@@ -1,4 +1,5 @@
 "use server";
+
 export const dynamic = "force-dynamic";
 
 import aj from "@/lib/arcjet";
